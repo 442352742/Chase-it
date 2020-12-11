@@ -41,9 +41,9 @@ void process_image_callback(const sensor_msgs::Image img)
     // Then, identify if this pixel falls in the left, mid, or right side of the image
     // Depending on the white ball position, call the drive_bot function and pass velocities to it
     // Request a stop when there's no white ball seen by the camera
-    for (int i = 0; i < img.height * img.step; i++) {
-    int position = i % (img.width * 3) / 3;
-        if (img.data[i] == white_pixel ) {
+     for (int i = 0; i < img.height * img.step; i += 3) {
+        int position = i % (img.width * 3) / 3;
+        if (img.data[i] == white_pixel && img.data[i + 1] == white_pixel && img.data[i + 2] == white_pixel ) {
             if(position <= 265) {
 		left_counter += 1;                
             }
@@ -62,16 +62,16 @@ void process_image_callback(const sensor_msgs::Image img)
     
     //Run
     if (loc == 0){
-        drive_robot(0.0, 0.0); // try to look around
+        drive_robot(0.0, 0.2); // try to look around
     }
     else if (loc == left_counter) {
-	drive_robot(0.0, -0.5);  
+	drive_robot(0.0, 0.5);  
     }
     else if (loc == mid_counter) {
-        drive_robot(0.0, 0.0);  
+        drive_robot(0.5, 0.0);  
     }
     else if (loc == right_counter) {
-        drive_robot(0.0, 0.5);
+        drive_robot(0.0, -0.5);
     }
     
     
